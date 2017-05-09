@@ -1,0 +1,98 @@
+## Преобразование данных во временной ряд
+##SI$X.DATE. <- strptime(SI$X.DATE., format = "%Y%m%d %H%M%S")
+
+
+## Включаем библиотеки
+library("TTR")
+library("plotly")
+library("readxl")
+
+
+## Методика расчета исторической волатильности
+
+## Загрузка данных
+##SI <- read.csv(file = "C:\\Users\\QuantCapital\\Desktop\\SI_data\\SPFB.Si.txt", header = TRUE, sep = ",")
+
+SI <- read.csv(file = "D:\\data_options\\data_BA\\List_SIM7.csv", header = TRUE, sep = ";")
+
+B <- read_excel("post_209500.xls")
+
+SI$X.DATE. <- paste(SI$X.TIME, SI$X.DATE.)
+
+## Удаление лишних данных
+SI <- SI[, !(colnames(SI) %in% c("X.TICKER.", "X.PER.", "X.TIME."))]
+
+## Создание пустых дат для волатильностей
+n_data <- nrow(SI)
+
+
+ohlc <- SI[,c("X.CLOSE.", "X.HIGH.", "X.LOW.", "X.OPEN.")]
+
+## Расчет долгосрочной исторической волатильности
+longterm_HV <- volatility(OHLC = ohlc, n = 24000, calc = "close", N = 205000, mean0 = FALSE)
+longterm_HV <- round(longterm_HV, digits = 4)
+
+## Классическая 1-дневная (побарная)
+classic_1day_bar <- volatility(OHLC = ohlc, n = 800, calc = "close", N = 205000, mean0 = FALSE)
+classic_1day_bar <- round(classic_1day_bar, digits = 4)
+
+## Классическая 5-дневная (побарная)
+classic_5day_bar <- volatility(OHLC = ohlc, n = 4000, calc = "close", N = 205000, mean0 = FALSE)
+classic_5day_bar <- round(classic_5day_bar, digits = 4)
+
+## YoungShang 1-дневная (побарная)
+YoungShang_1day_bar <- volatility(OHLC = ohlc, n = 800, calc = "yang.zhang", N = 205000, mean0 = FALSE)
+YoungShang_1day_bar <- round(YoungShang_1day_bar, digits = 4)
+
+## YoungShang 5-дневная (побарная)
+YoungShang_5day_bar <- volatility(OHLC = ohlc, n = 4000, calc = "yang.zhang", N = 205000, mean0 = FALSE)
+YoungShang_5day_bar <- round(YoungShang_5day_bar, digits = 4)
+
+## YoungShang 30-дневная (побарная)
+YoungShang_30day_bar <- volatility(OHLC = ohlc, n = 24000, calc = "yang.zhang", N = 205000, mean0 = FALSE)
+YoungShang_30day_bar <- round(YoungShang_30day_bar, digits = 4)
+
+## Скользящие средние
+shortterm_SMA <- SMA(longterm_HV, 800)
+shortterm_SMA <- round(shortterm_SMA, digits = 4)
+shortterm_SMA_YS <- SMA(YoungShang_30day_bar, 800)
+shortterm_SMA_YS <- round(shortterm_SMA_YS, digits = 4)
+
+
+## Создаю единую дату
+HV <- data.frame(SI$X.DATE., longterm_HV, classic_1day_bar, classic_5day_bar, YoungShang_1day_bar, YoungShang_5day_bar, YoungShang_30day_bar, shortterm_SMA, shortterm_SMA_YS)
+
+## Создаем дату по последним значениям (800 баров - 1 день)
+HV_last <- tail(HV, 800)
+x <- 1:800
+HV_last$SI.X.DATE. <- x
+
+## Создаем дату по последним значениям (24000 баров - 1 месяц)
+HV_last_1month <- tail(HV, 24000)
+x <- 1:24000
+HV_last_1month$SI.X.DATE. <- x
+
+
+## Выводим долгосрочную волатильность Classic
+HV_plot_LT_Classic <- plot_ly(HV_last_1month, x = HV_last_1month$SI.X.DATE., y = HV_last_1month$longterm_HV, name = 'LongTermVolatility', type = 'scatter', mode = 'lines+markers') %>%
+  add_trace(y = HV_last_1month$shortterm_SMA, name = 'ShortTermSMA', mode = 'lines')
+
+HV_plot_ST_Classic <- plot_ly(HV_last, x = HV_last$SI.X.DATE., y = HV_last$classic_1day_bar, name = 'Classic1dayVol', type = 'scatter', mode = 'lines+markers')
+HV_plot_ST_Classic_5days <- plot_ly(HV_last, x = HV_last$SI.X.DATE., y = HV_last$classic_5day_bar, name = 'Classic5dayVol', type = 'scatter', mode = 'lines+markers')
+
+
+## Выводим долгосрочную волатильность YS
+HV_plot_LT_YS <- plot_ly(HV_last, x = HV_last$SI.X.DATE., y = HV_last$YoungShang_30day_bar, name = 'LongTermVolatilityYS', type = 'scatter', mode = 'lines+markers') %>%
+  add_trace(y = HV_last$shortterm_SMA_YS, name = 'ShortTermSMAYS', mode = 'lines')
+
+HV_plot_ST_YS <- plot_ly(HV_last, x = HV_last$SI.X.DATE., y = HV_last$YoungShang_1day_bar, name = 'Classic1dayVolYS', type = 'scatter', mode = 'lines+markers')
+HV_plot_ST_YS_5days <- plot_ly(HV_last, x = HV_last$SI.X.DATE., y = HV_last$YoungShang_5day_bar, name = 'Classic5dayVolYS', type = 'scatter', mode = 'lines+markers')
+
+
+
+## Выводим общие графики
+Front_plot_Classic <- subplot(nrows = 3 , HV_plot_LT_Classic, HV_plot_ST_Classic_5days, HV_plot_ST_Classic)
+Front_plot_YS <- subplot(nrows = 3 , HV_plot_LT_YS, HV_plot_ST_YS_5days, HV_plot_ST_YS)
+
+Front_plot <- subplot(Front_plot_Classic, Front_plot_YS)
+Front_plot
