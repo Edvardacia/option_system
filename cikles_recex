@@ -1,0 +1,35 @@
+
+ x <- 1
+  CloseTime <- Sys.time() + 5*6000
+
+  repeat {
+
+
+   startTime <- Sys.time()
+    x = x + 1
+    print(x)
+
+   SI <- read.csv(file = "D:\\data_options\\data_BA\\List_SIM7.csv", header = TRUE, sep = "")
+
+   ##SI$V1 <- strptime(SI$V1, format = "%Y.%m.%d %H:%M:%S")
+   
+   ## Создаем дату по последним значениям (800 баров - 1 день)
+   HV_last <- head(SI, 50)
+   HV_last <- HV_last[order(nrow(HV_last):1),]
+   w <- 1:50
+   HV_last$Дата <- w
+
+   plot(HV_last$Дата, HV_last$открытия, type = "l")
+
+   sleepTime <- startTime + 5*60 - Sys.time()
+
+  if (sleepTime > 0)
+    Sys.sleep(sleepTime)
+
+  if (startTime==CloseTime)
+    break
+  }
+
+  SI <- read.csv(file = "D:\\data_options\\data_BA\\List_SIM7.csv", header = TRUE, sep = ";")
+  
+  
