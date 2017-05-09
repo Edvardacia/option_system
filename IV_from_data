@@ -1,0 +1,545 @@
+
+install.packages('data.table')
+install.packages('knitr')
+install.packages('miniUI')
+install.packages('shiny')
+install.packages("taskscheduleR", repos = "http://www.datatailor.be/rcube", type = "source")
+
+##Export data_base_active
+SI <- read.csv(file = "D:\\data_options\\SI.csv", header = TRUE, sep = ";")
+
+## Implied Volatility Function
+
+implied.vol_Call <-
+  function(Price_option, Strike, Price, Time_exp) {
+    delta <- 1000
+    T = Time_exp/366
+    r <- 0
+    best_sigma <- 0
+    
+    for (i in seq(0.001, 0.999, by = 0.001)) {
+      d1 <- (log(Price/Strike) + T*(r + 0.5*i*i)) / (i*sqrt(T))
+      d2 <- (log(Price/Strike) - T*(r + 0.5*i*i)) / (i*sqrt(T))
+      d1 <- pnorm(d1)
+      d2 <- pnorm(d2)
+      Call <- Price * d1 - Strike * d2
+      raz <- abs(Price_option - Call)
+      if (raz < delta) {
+        delta = raz
+        best_sigma_Call = i
+      }
+    }
+    return(best_sigma_Call)
+  }
+
+implied.vol_Put <-
+  function(Price_option, Strike, Price, Time_exp) {
+    delta <- 1000
+    T = Time_exp/366
+    r <- 0
+    best_sigma <- 0
+    
+    for (i in seq(0.001, 0.999, by = 0.001)) {
+      d1 <- (log(Price/Strike) + T*(r + 0.5*i*i)) / (i*sqrt(T))
+      d2 <- (log(Price/Strike) - T*(r + 0.5*i*i)) / (i*sqrt(T))
+      d1 <- pnorm(d1)
+      d2 <- pnorm(d2)
+      Call <- Price * d1 - Strike * d2
+      Put <- Call - Price + Strike
+      raz <- abs(Price_option - Put)
+      if (raz < delta) {
+        delta = raz
+        best_sigma_Put = i
+      }
+    }
+    return(best_sigma_Put)
+  }
+
+
+##Export data_options
+
+
+SI55000 <- read.csv(file = "D:\\data_options\\options_call\\SI55000.csv", header = TRUE, sep = ";")
+SI55250 <- read.csv(file = "D:\\data_options\\options_call\\SI55250.csv", header = TRUE, sep = ";")
+SI55500 <- read.csv(file = "D:\\data_options\\options_call\\SI55500.csv", header = TRUE, sep = ";")
+SI55750 <- read.csv(file = "D:\\data_options\\options_call\\SI55750.csv", header = TRUE, sep = ";")
+SI56000 <- read.csv(file = "D:\\data_options\\options_call\\SI56000.csv", header = TRUE, sep = ";")
+SI56250 <- read.csv(file = "D:\\data_options\\options_call\\SI56250.csv", header = TRUE, sep = ";")
+SI56500 <- read.csv(file = "D:\\data_options\\options_call\\SI56500.csv", header = TRUE, sep = ";")
+SI56750 <- read.csv(file = "D:\\data_options\\options_call\\SI56750.csv", header = TRUE, sep = ";")
+SI57000 <- read.csv(file = "D:\\data_options\\options_call\\SI57000.csv", header = TRUE, sep = ";")
+SI57250 <- read.csv(file = "D:\\data_options\\options_call\\SI57250.csv", header = TRUE, sep = ";")
+SI57500 <- read.csv(file = "D:\\data_options\\options_call\\SI57500.csv", header = TRUE, sep = ";")
+SI57750 <- read.csv(file = "D:\\data_options\\options_call\\SI57750.csv", header = TRUE, sep = ";")
+SI58000 <- read.csv(file = "D:\\data_options\\options_call\\SI58000.csv", header = TRUE, sep = ";")
+SI58250 <- read.csv(file = "D:\\data_options\\options_call\\SI58250.csv", header = TRUE, sep = ";")
+SI58500 <- read.csv(file = "D:\\data_options\\options_call\\SI58500.csv", header = TRUE, sep = ";")
+
+SI58750 <- read.csv(file = "D:\\data_options\\options_call\\SI58750.csv", header = TRUE, sep = ";")
+SI59000 <- read.csv(file = "D:\\data_options\\options_call\\SI59000.csv", header = TRUE, sep = ";")
+SI59250 <- read.csv(file = "D:\\data_options\\options_call\\SI59250.csv", header = TRUE, sep = ";")
+SI59500 <- read.csv(file = "D:\\data_options\\options_call\\SI59500.csv", header = TRUE, sep = ";")
+SI59750 <- read.csv(file = "D:\\data_options\\options_call\\SI59750.csv", header = TRUE, sep = ";")
+SI60000 <- read.csv(file = "D:\\data_options\\options_call\\SI60000.csv", header = TRUE, sep = ";")
+SI60250 <- read.csv(file = "D:\\data_options\\options_call\\SI60250.csv", header = TRUE, sep = ";")
+SI60500 <- read.csv(file = "D:\\data_options\\options_call\\SI60500.csv", header = TRUE, sep = ";")
+SI60750 <- read.csv(file = "D:\\data_options\\options_call\\SI60750.csv", header = TRUE, sep = ";")
+SI61000 <- read.csv(file = "D:\\data_options\\options_call\\SI61000.csv", header = TRUE, sep = ";")
+SI61250 <- read.csv(file = "D:\\data_options\\options_call\\SI61250.csv", header = TRUE, sep = ";")
+SI61500 <- read.csv(file = "D:\\data_options\\options_call\\SI61500.csv", header = TRUE, sep = ";")
+SI61750 <- read.csv(file = "D:\\data_options\\options_call\\SI61750.csv", header = TRUE, sep = ";")
+SI62000 <- read.csv(file = "D:\\data_options\\options_call\\SI62000.csv", header = TRUE, sep = ";")
+SI62250 <- read.csv(file = "D:\\data_options\\options_call\\SI62250.csv", header = TRUE, sep = ";")
+
+SI62500 <- read.csv(file = "D:\\data_options\\options_call\\SI62500.csv", header = TRUE, sep = ";")
+SI62750 <- read.csv(file = "D:\\data_options\\options_call\\SI62750.csv", header = TRUE, sep = ";")
+SI63000 <- read.csv(file = "D:\\data_options\\options_call\\SI63000.csv", header = TRUE, sep = ";")
+SI63250 <- read.csv(file = "D:\\data_options\\options_call\\SI63250.csv", header = TRUE, sep = ";")
+SI63500 <- read.csv(file = "D:\\data_options\\options_call\\SI63500.csv", header = TRUE, sep = ";")
+SI63750 <- read.csv(file = "D:\\data_options\\options_call\\SI63750.csv", header = TRUE, sep = ";")
+SI64000 <- read.csv(file = "D:\\data_options\\options_call\\SI64000.csv", header = TRUE, sep = ";")
+SI64250 <- read.csv(file = "D:\\data_options\\options_call\\SI64250.csv", header = TRUE, sep = ";")
+SI64500 <- read.csv(file = "D:\\data_options\\options_call\\SI64500.csv", header = TRUE, sep = ";")
+SI64750 <- read.csv(file = "D:\\data_options\\options_call\\SI64750.csv", header = TRUE, sep = ";")
+SI65000 <- read.csv(file = "D:\\data_options\\options_call\\SI65000.csv", header = TRUE, sep = ";")
+SI65250 <- read.csv(file = "D:\\data_options\\options_call\\SI65250.csv", header = TRUE, sep = ";")
+SI65500 <- read.csv(file = "D:\\data_options\\options_call\\SI65500.csv", header = TRUE, sep = ";")
+SI65750 <- read.csv(file = "D:\\data_options\\options_call\\SI65750.csv", header = TRUE, sep = ";")
+SI66000 <- read.csv(file = "D:\\data_options\\options_call\\SI66000.csv", header = TRUE, sep = ";")
+
+##Fixed Bid and Ask
+
+Strike <- c(66000, 65750, 65500, 65250, 65000, 64750, 64500, 64250, 64000, 63750, 63500, 63250, 63000, 62750, 62500, 62250, 62000, 61750, 61500, 61250, 61000, 60750, 60500, 60250, 60000, 
+            59750, 59500, 59250, 59000, 58750, 58500, 58250, 58000, 57750, 57500, 57250, 57000, 56750, 56500, 56250, 56000, 55750, 55500, 55250, 55000)
+
+Price <- SI$BID1_PRICE
+
+n_Strike <- length(Strike)
+Bid1_price <- rep(0, n_Strike)
+Ask1_price <- rep(0, n_Strike)
+Strikebidask <- data.frame(Strike, Bid1_price, Ask1_price)
+
+time_max <- 0
+for (i in seq(1, length(SI55000$TIME), by = 1)) {
+  if (SI55000$TIME[i] > time_max) {
+    time_max = SI55000$TIME[i]
+    Strikebidask[[2]][45] <- SI55000$BID1_PRICE[i]
+    Strikebidask[[3]][45] <- SI55000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI55250$TIME), by = 1)) {
+  if (SI55250$TIME[i] > time_max) {
+    time_max = SI55250$TIME[i]
+    Strikebidask[[2]][44] <- SI55250$BID1_PRICE[i]
+    Strikebidask[[3]][44] <- SI55250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI55500$TIME), by = 1)) {
+  if (SI55500$TIME[i] > time_max) {
+    time_max = SI55500$TIME[i]
+    Strikebidask[[2]][43] <- SI55500$BID1_PRICE[i]
+    Strikebidask[[3]][43] <- SI55500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI55750$TIME), by = 1)) {
+  if (SI55750$TIME[i] > time_max) {
+    time_max = SI55500$TIME[i]
+    Strikebidask[[2]][42] <- SI55750$BID1_PRICE[i]
+    Strikebidask[[3]][42] <- SI55750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI56000$TIME), by = 1)) {
+  if (SI56000$TIME[i] > time_max) {
+    time_max = SI56000$TIME[i]
+    Strikebidask[[2]][41] <- SI56000$BID1_PRICE[i]
+    Strikebidask[[3]][41] <- SI56000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI56250$TIME), by = 1)) {
+  if (SI56250$TIME[i] > time_max) {
+    time_max = SI56250$TIME[i]
+    Strikebidask[[2]][40] <- SI56250$BID1_PRICE[i]
+    Strikebidask[[3]][40] <- SI56250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI56500$TIME), by = 1)) {
+  if (SI56500$TIME[i] > time_max) {
+    time_max = SI56500$TIME[i]
+    Strikebidask[[2]][39] <- SI56500$BID1_PRICE[i]
+    Strikebidask[[3]][39] <- SI56500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI56750$TIME), by = 1)) {
+  if (SI56750$TIME[i] > time_max) {
+    time_max = SI56750$TIME[i]
+    Strikebidask[[2]][38] <- SI56750$BID1_PRICE[i]
+    Strikebidask[[3]][38] <- SI56750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI57000$TIME), by = 1)) {
+  if (SI57000$TIME[i] > time_max) {
+    time_max = SI57000$TIME[i]
+    Strikebidask[[2]][37] <- SI57000$BID1_PRICE[i]
+    Strikebidask[[3]][37] <- SI57000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI57250$TIME), by = 1)) {
+  if (SI57250$TIME[i] > time_max) {
+    time_max = SI57250$TIME[i]
+    Strikebidask[[2]][36] <- SI57250$BID1_PRICE[i]
+    Strikebidask[[3]][36] <- SI57250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI57500$TIME), by = 1)) {
+  if (SI57500$TIME[i] > time_max) {
+    time_max = SI57500$TIME[i]
+    Strikebidask[[2]][35] <- SI57500$BID1_PRICE[i]
+    Strikebidask[[3]][35] <- SI57500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI57750$TIME), by = 1)) {
+  if (SI57750$TIME[i] > time_max) {
+    time_max = SI57750$TIME[i]
+    Strikebidask[[2]][34] <- SI57750$BID1_PRICE[i]
+    Strikebidask[[3]][34] <- SI57750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI58000$TIME), by = 1)) {
+  if (SI58000$TIME[i] > time_max) {
+    time_max = SI58000$TIME[i]
+    Strikebidask[[2]][33] <- SI58000$BID1_PRICE[i]
+    Strikebidask[[3]][33] <- SI58000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI58250$TIME), by = 1)) {
+  if (SI58250$TIME[i] > time_max) {
+    time_max = SI58250$TIME[i]
+    Strikebidask[[2]][32] <- SI58250$BID1_PRICE[i]
+    Strikebidask[[3]][32] <- SI58250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI58500$TIME), by = 1)) {
+  if (SI58500$TIME[i] > time_max) {
+    time_max = SI58500$TIME[i]
+    Strikebidask[[2]][31] <- SI58500$BID1_PRICE[i]
+    Strikebidask[[3]][31] <- SI58500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI58750$TIME), by = 1)) {
+  if (SI58750$TIME[i] > time_max) {
+    time_max = SI58750$TIME[i]
+    Strikebidask[[2]][30] <- SI58750$BID1_PRICE[i]
+    Strikebidask[[3]][30] <- SI58750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI59000$TIME), by = 1)) {
+  if (SI59000$TIME[i] > time_max) {
+    time_max = SI59000$TIME[i]
+    Strikebidask[[2]][29] <- SI59000$BID1_PRICE[i]
+    Strikebidask[[3]][29] <- SI59000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI59250$TIME), by = 1)) {
+  if (SI59250$TIME[i] > time_max) {
+    time_max = SI59250$TIME[i]
+    Strikebidask[[2]][28] <- SI59250$BID1_PRICE[i]
+    Strikebidask[[3]][28] <- SI59250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI59500$TIME), by = 1)) {
+  if (SI59500$TIME[i] > time_max) {
+    time_max = SI59500$TIME[i]
+    Strikebidask[[2]][27] <- SI59500$BID1_PRICE[i]
+    Strikebidask[[3]][27] <- SI59500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI59750$TIME), by = 1)) {
+  if (SI59750$TIME[i] > time_max) {
+    time_max = SI59750$TIME[i]
+    Strikebidask[[2]][26] <- SI59750$BID1_PRICE[i]
+    Strikebidask[[3]][26] <- SI59750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI60000$TIME), by = 1)) {
+  if (SI60000$TIME[i] > time_max) {
+    time_max = SI60000$TIME[i]
+    Strikebidask[[2]][25] <- SI60000$BID1_PRICE[i]
+    Strikebidask[[3]][25] <- SI60000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI60250$TIME), by = 1)) {
+  if (SI60250$TIME[i] > time_max) {
+    time_max = SI60250$TIME[i]
+    Strikebidask[[2]][24] <- SI60250$BID1_PRICE[i]
+    Strikebidask[[3]][24] <- SI60250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI60500$TIME), by = 1)) {
+  if (SI60500$TIME[i] > time_max) {
+    time_max = SI60500$TIME[i]
+    Strikebidask[[2]][23] <- SI60500$BID1_PRICE[i]
+    Strikebidask[[3]][23] <- SI60500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI60750$TIME), by = 1)) {
+  if (SI60750$TIME[i] > time_max) {
+    time_max = SI60750$TIME[i]
+    Strikebidask[[2]][22] <- SI60750$BID1_PRICE[i]
+    Strikebidask[[3]][22] <- SI60750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI61000$TIME), by = 1)) {
+  if (SI61000$TIME[i] > time_max) {
+    time_max = SI61000$TIME[i]
+    Strikebidask[[2]][21] <- SI61000$BID1_PRICE[i]
+    Strikebidask[[3]][21] <- SI61000$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI61250$TIME), by = 1)) {
+  if (SI61250$TIME[i] > time_max) {
+    time_max = SI61250$TIME[i]
+    Strikebidask[[2]][20] <- SI61250$BID1_PRICE[i]
+    Strikebidask[[3]][20] <- SI61250$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI61500$TIME), by = 1)) {
+  if (SI61500$TIME[i] > time_max) {
+    time_max = SI61500$TIME[i]
+    Strikebidask[[2]][19] <- SI61500$BID1_PRICE[i]
+    Strikebidask[[3]][19] <- SI61500$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI61750$TIME), by = 1)) {
+  if (SI61750$TIME[i] > time_max) {
+    time_max = SI61750$TIME[i]
+    Strikebidask[[2]][18] <- SI61750$BID1_PRICE[i]
+    Strikebidask[[3]][18] <- SI61750$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI62000$TIME), by = 1)) {
+  if (SI62000$TIME[i] > time_max) {
+    time_max = SI62000$TIME[i]
+    Strikebidask[[2]][17] <- SI62000$BID1_PRICE[i]
+    Strikebidask[[3]][17] <- SI62000$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI62250$TIME), by = 1)) {
+  if (SI62250$TIME[i] > time_max) {
+    time_max = SI62250$TIME[i]
+    Strikebidask[[2]][16] <- SI62250$BID1_PRICE[i]
+    Strikebidask[[3]][16] <- SI62250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI62500$TIME), by = 1)) {
+  if (SI62500$TIME[i] > time_max) {
+    time_max = SI62500$TIME[i]
+    Strikebidask[[2]][15] <- SI62500$BID1_PRICE[i]
+    Strikebidask[[3]][15] <- SI62500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI62750$TIME), by = 1)) {
+  if (SI62750$TIME[i] > time_max) {
+    time_max = SI62750$TIME[i]
+    Strikebidask[[2]][14] <- SI62750$BID1_PRICE[i]
+    Strikebidask[[3]][14] <- SI62750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI63000$TIME), by = 1)) {
+  if (SI63000$TIME[i] > time_max) {
+    time_max = SI63000$TIME[i]
+    Strikebidask[[2]][13] <- SI63000$BID1_PRICE[i]
+    Strikebidask[[3]][13] <- SI63000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI63250$TIME), by = 1)) {
+  if (SI63250$TIME[i] > time_max) {
+    time_max = SI63250$TIME[i]
+    Strikebidask[[2]][12] <- SI63250$BID1_PRICE[i]
+    Strikebidask[[3]][12] <- SI63250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI63500$TIME), by = 1)) {
+  if (SI63500$TIME[i] > time_max) {
+    time_max = SI63500$TIME[i]
+    Strikebidask[[2]][11] <- SI63500$BID1_PRICE[i]
+    Strikebidask[[3]][11] <- SI63500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI63750$TIME), by = 1)) {
+  if (SI63750$TIME[i] > time_max) {
+    time_max = SI63750$TIME[i]
+    Strikebidask[[2]][10] <- SI63750$BID1_PRICE[i]
+    Strikebidask[[3]][10] <- SI63750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI64000$TIME), by = 1)) {
+  if (SI64000$TIME[i] > time_max) {
+    time_max = SI64000$TIME[i]
+    Strikebidask[[2]][9] <- SI64000$BID1_PRICE[i]
+    Strikebidask[[3]][9] <- SI64000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI64250$TIME), by = 1)) {
+  if (SI64250$TIME[i] > time_max) {
+    time_max = SI64250$TIME[i]
+    Strikebidask[[2]][8] <- SI64250$BID1_PRICE[i]
+    Strikebidask[[3]][8] <- SI64250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI64500$TIME), by = 1)) {
+  if (SI64500$TIME[i] > time_max) {
+    time_max = SI64500$TIME[i]
+    Strikebidask[[2]][7] <- SI64500$BID1_PRICE[i]
+    Strikebidask[[3]][7] <- SI64500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI64750$TIME), by = 1)) {
+  if (SI64750$TIME[i] > time_max) {
+    time_max = SI64750$TIME[i]
+    Strikebidask[[2]][6] <- SI64750$BID1_PRICE[i]
+    Strikebidask[[3]][6] <- SI64750$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI65000$TIME), by = 1)) {
+  if (SI65000$TIME[i] > time_max) {
+    time_max = SI65000$TIME[i]
+    Strikebidask[[2]][5] <- SI65000$BID1_PRICE[i]
+    Strikebidask[[3]][5] <- SI65000$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI65250$TIME), by = 1)) {
+  if (SI65250$TIME[i] > time_max) {
+    time_max = SI65250$TIME[i]
+    Strikebidask[[2]][4] <- SI65250$BID1_PRICE[i]
+    Strikebidask[[3]][4] <- SI65250$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI65500$TIME), by = 1)) {
+  if (SI65500$TIME[i] > time_max) {
+    time_max = SI65500$TIME[i]
+    Strikebidask[[2]][3] <- SI65500$BID1_PRICE[i]
+    Strikebidask[[3]][3] <- SI65500$ASK1_PRICE[i]
+  }
+}
+
+time_max <- 0
+for (i in seq(1, length(SI65750$TIME), by = 1)) {
+  if (SI65750$TIME[i] > time_max) {
+    time_max = SI65750$TIME[i]
+    Strikebidask[[2]][2] <- SI65750$BID1_PRICE[i]
+    Strikebidask[[3]][2] <- SI65750$ASK1_PRICE[i]
+  }
+}
+
+
+time_max <- 0
+for (i in seq(1, length(SI66000$TIME), by = 1)) {
+  if (SI66000$TIME[i] > time_max) {
+    time_max = SI66000$TIME[i]
+    Strikebidask[[2]][1] <- SI66000$BID1_PRICE[i]
+    Strikebidask[[3]][1] <- SI66000$ASK1_PRICE[i]
+  }
+}
+
+
+for (i in 1:n_Strike) {
+  if ((Price - Strikebidask$Strike[i]) <= 200 && (Price-Strikebidask$Strike[i]) > 0) {
+    Central_Strike <- Strikebidask$Strike[i]
+    Central_Bid1 <- Strikebidask$Bid1_price[i]
+    Central_Ask1 <- Strikebidask$Ask1_price[i]
+  } 
+}
+
+Central_IV <- (Central_Bid1 + Central_Ask1)/2
+IV <- implied.vol_Put(3244, 62500, 59550, 44)
+
+
