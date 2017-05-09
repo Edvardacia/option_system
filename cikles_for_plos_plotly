@@ -1,0 +1,56 @@
+
+ # x <- 1
+#  CloseTime <- Sys.time() + 5*6000
+  
+#  repeat {
+    
+
+ #   startTime <- Sys.time()
+#    x = x + 1
+#    print(x)
+    
+ #   SI <- read.csv(file = "D:\\data_options\\SI.csv", header = TRUE, sep = ";")
+  #  SI$DATE <- strptime(SI$DATE, format = "%Y%m%d")
+#    plot(SI$DATE, SI$BID1_PRICE, type = "b")
+    
+ #   sleepTime <- startTime + 5*60 - Sys.time()
+    
+  #  if (sleepTime > 0)
+  #    Sys.sleep(sleepTime)
+    
+  #  if (startTime==CloseTime)
+  #    break
+#  }
+
+  
+  CloseTime <- Sys.time() + 5*6000
+  
+  repeat {
+  
+    
+  startTime <- Sys.time()
+  
+  
+  library("TTR")
+  library("plotly")
+  library("ggplot2")
+  
+  
+  SI <- read.csv(file = "D:\\data_options\\SI.csv", header = TRUE, sep = ";")
+  #SI$DATE <- strptime(SI$DATE, format = "%Y%m%d")
+  #date <- data.frame(SI$DATE, SI$BID1_PRICE)
+  #plot(SI$DATE, SI$BID1_PRICE, type = "b")
+  S <- plot_ly(SI, x = SI$DATE, y = SI$BID1_PRICE, name = 'ClosePrice', type = 'scatter', mode = 'lines')
+  print(S)
+  
+
+  
+  sleepTime <- startTime + 5*60 - Sys.time()
+  
+  if (sleepTime > 0) { Sys.sleep(sleepTime) }
+  if (startTime==CloseTime) { break }
+  
+  
+  }
+  
+  
