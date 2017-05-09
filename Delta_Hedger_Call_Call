@@ -1,0 +1,1031 @@
+
+
+# Параметры для расчета дельта-хеджирования
+
+IV <- "12,00%"
+Price <- 58000
+r <- 0
+t <- 22
+K <- 58000
+Size_K <- 10
+K2 <- 61250
+Size_K2 <- -100
+
+
+
+Volatility_smile <- c(0, 0.0002, 0.0004, 0.0010, 0.0016, 0.0024, 0.0034, 0.0044, 0.0059, 0.0079, 0.0099, 0.0114, 0.0134, 0.0154, 0.0184, 0.0204, 0.0234, 0.0264, 0.0294, 0.0324,NA, NA, NA, NA, NA,
+                      NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                      0.0001, 0.0004, 0.0010, 0.0014, 0.0024, 0.0034, 0.0044, 0.0064, 0.0084, 0.0099, 0.0124, 0.0135, 0.0174, 0.0204, 0.0229, 0.0264, 0.0304, 0.0335, 0.0339, NA, NA, NA, NA, NA,
+                      NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+
+
+Returns <- c(0, 250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000, 5250, 5500, 5750, 6000,
+             6250, 6500, 6750, 7000, 7250, 7500, 7750, 8000, 8250, 8500, 8750, 9000,  9250, 9500, 9750, 10000, 
+             -250, -500, -750, -1000, -1250, -1500, -1750, -2000, -2250, -2500, -2750, -3000, -3250, -3500, -3750, -4000, -4250, -4500, -4750, -5000, -5250, -5500, -5750, -6000,
+             -6250, -6500, -6750, -7000, -7250, -7500, -7750, -8000, -8250, -8500, -8750, -9000, -9250, -9500, -9750, -10000)
+
+
+Strike <- c(66500, 66250, 66000, 65750, 65500, 65250, 65000, 64750, 64500, 64250, 64000, 63750, 63500, 63250, 63000, 62750, 62500, 62250, 62000, 61750, 61500, 61250, 61000, 60750, 60500, 60250, 60000, 
+            59750, 59500, 59250, 59000, 58750, 58500, 58250, 58000, 57750, 57500, 57250, 57000, 56750, 56500, 56250, 56000, 55750, 55500, 55250, 55000)
+n_Strike <- length(Strike)
+n_Returns <- length(Returns)
+n_Volatility_Smile <- length(Volatility_smile)
+
+# Расчет дельты
+
+Vol_Smile_Coeff <- rep(0, n_Returns)
+Returns_Coeff <- rep(0, n_Returns)
+
+for(i in 1:n_Returns) {
+  Vol_Smile_Coeff[i] <- Volatility_smile[i]
+  Returns_Coeff[i] <- Returns[i]
+}
+
+
+Vola_delta <- data.frame(Returns_Coeff, Vol_Smile_Coeff)
+Sigma9 <- 0
+
+
+for (i in 1:n_Returns) {
+  
+  Raz66500 <- K - 66500
+  Raz66250 <- K - 66250
+  Raz66000 <- K - 66000
+  Raz65750 <- K - 65750
+  Raz65500 <- K - 65500
+  Raz65250 <- K - 65250
+  Raz65000 <- K - 65000
+  Raz64750 <- K - 64750
+  Raz64500 <- K - 64500
+  Raz64250 <- K - 64250
+  Raz64000 <- K - 64000
+  Raz63750 <- K - 63750
+  Raz63500 <- K - 63500
+  Raz63250 <- K - 63250
+  
+  Raz63000 <- K - 63000
+  Raz62750 <- K - 62750
+  Raz62500 <- K - 62500
+  Raz62250 <- K - 62250
+  Raz62000 <- K - 62000
+  Raz61750 <- K - 61750
+  Raz61500 <- K - 61500
+  Raz61250 <- K - 61250
+  Raz61000 <- K - 61000
+  Raz60750 <- K - 60750
+  Raz60500 <- K - 60500
+  Raz60250 <- K - 60250
+  Raz60000 <- K - 60000
+  Raz59750 <- K - 59750
+  Raz59500 <- K - 59500
+  Raz59250 <- K - 59250
+  Raz59000 <- K - 59000
+  
+  Raz58750 <- K - 58750
+  Raz58500 <- K - 58500
+  Raz58250 <- K - 58250
+  Raz58000 <- K - 58000
+  Raz57750 <- K - 57750
+  Raz57500 <- K - 57500
+  Raz57250 <- K - 57250
+  Raz57000 <- K - 57000
+  Raz56750 <- K - 56750
+  Raz56500 <- K - 56500
+  Raz56250 <- K - 56250
+  Raz56000 <- K - 56000
+  Raz55750 <- K - 55750
+  Raz55500 <- K - 55500
+  Raz55250 <- K - 55250
+  Raz55000 <- K - 55000
+  
+  
+  
+  if ((Raz66500 == Returns_Coeff[i])) { 
+    Best_Sigma66500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz66250 == Returns_Coeff[i])) { 
+    Best_Sigma66250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz66000 == Returns_Coeff[i])) { 
+    Best_Sigma66000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65750 == Returns_Coeff[i])) { 
+    Best_Sigma65750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65500 == Returns_Coeff[i])) { 
+    Best_Sigma65500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65250 == Returns_Coeff[i])) { 
+    Best_Sigma65250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65000 == Returns_Coeff[i])) { 
+    Best_Sigma65000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64750 == Returns_Coeff[i])) { 
+    Best_Sigma64750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64500 == Returns_Coeff[i])) { 
+    Best_Sigma64500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64250 == Returns_Coeff[i])) { 
+    Best_Sigma64250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64000 == Returns_Coeff[i])) { 
+    Best_Sigma64000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63750 == Returns_Coeff[i])) { 
+    Best_Sigma63750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63500 == Returns_Coeff[i])) { 
+    Best_Sigma63500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63250 == Returns_Coeff[i])) { 
+    Best_Sigma63250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+  
+  if ((Raz63000 == Returns_Coeff[i])) { 
+    Best_Sigma63000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62750 == Returns_Coeff[i])) { 
+    Best_Sigma62750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62500 == Returns_Coeff[i])) { 
+    Best_Sigma62500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62250 == Returns_Coeff[i])) { 
+    Best_Sigma62250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62000 == Returns_Coeff[i])) { 
+    Best_Sigma62000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61750 == Returns_Coeff[i])) { 
+    Best_Sigma61750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61500 == Returns_Coeff[i])) { 
+    Best_Sigma61500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61250 == Returns_Coeff[i])) { 
+    Best_Sigma61250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61000 == Returns_Coeff[i])) { 
+    Best_Sigma61000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60750 == Returns_Coeff[i])) { 
+    Best_Sigma60750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60500 == Returns_Coeff[i])) { 
+    Best_Sigma60500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60250 == Returns_Coeff[i])) { 
+    Best_Sigma60250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60000 == Returns_Coeff[i])) { 
+    Best_Sigma60000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59750 == Returns_Coeff[i])) { 
+    Best_Sigma59750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59500 == Returns_Coeff[i])) { 
+    Best_Sigma59500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59250 == Returns_Coeff[i])) { 
+    Best_Sigma59250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59000 == Returns_Coeff[i])) { 
+    Best_Sigma59000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+  
+  if ((Raz58750 == Returns_Coeff[i])) { 
+    Best_Sigma58750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58500 == Returns_Coeff[i])) { 
+    Best_Sigma58500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58250 == Returns_Coeff[i])) { 
+    Best_Sigma58250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58000 == Returns_Coeff[i])) { 
+    Best_Sigma58000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57750 == Returns_Coeff[i])) { 
+    Best_Sigma57750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57500 == Returns_Coeff[i])) { 
+    Best_Sigma57500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57250 == Returns_Coeff[i])) { 
+    Best_Sigma57250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57000 == Returns_Coeff[i])) { 
+    Best_Sigma57000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56750 == Returns_Coeff[i])) { 
+    Best_Sigma56750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56500 == Returns_Coeff[i])) { 
+    Best_Sigma56500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56250 == Returns_Coeff[i])) { 
+    Best_Sigma56250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56000 == Returns_Coeff[i])) { 
+    Best_Sigma56000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55750 == Returns_Coeff[i])) { 
+    Best_Sigma55750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55500 == Returns_Coeff[i])) { 
+    Best_Sigma55500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55250 == Returns_Coeff[i])) { 
+    Best_Sigma55250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55000 == Returns_Coeff[i])) { 
+    Best_Sigma55000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+}
+
+
+
+Returnss <- c(Best_Sigma66500, Best_Sigma66250, Best_Sigma66000, Best_Sigma65750, Best_Sigma65500, Best_Sigma65250, Best_Sigma65000, 
+              Best_Sigma64750, Best_Sigma64500, Best_Sigma64250, 
+              Best_Sigma64000, Best_Sigma63750, Best_Sigma63500, Best_Sigma63250, Best_Sigma63000, Best_Sigma62750, Best_Sigma62500, 
+              Best_Sigma62250, Best_Sigma62000, Best_Sigma61750, Best_Sigma61500, Best_Sigma61250, Best_Sigma61000, Best_Sigma60750, 
+              Best_Sigma60500, Best_Sigma60250, Best_Sigma60000, Best_Sigma59750, Best_Sigma59500, Best_Sigma59250, Best_Sigma59000,
+              
+              Best_Sigma58750, Best_Sigma58500, Best_Sigma58250, Best_Sigma58000, Best_Sigma57750, Best_Sigma57500, Best_Sigma57250, 
+              Best_Sigma57000, Best_Sigma56750, Best_Sigma56500, Best_Sigma56250, Best_Sigma56000, Best_Sigma55750, Best_Sigma55500, 
+              Best_Sigma55250, Best_Sigma55000)
+
+
+Strike_Returns <- data.frame(Strike, Returnss)
+
+Delta9 <- rep(0, n_Strike)
+Delta9.5 <- rep(0, n_Strike)
+Delta10 <- rep(0, n_Strike)
+Delta10.5 <- rep(0, n_Strike)
+Delta11 <- rep(0, n_Strike)
+Delta11.5 <- rep(0, n_Strike)
+Delta12 <- rep(0, n_Strike)
+Delta12.5 <- rep(0, n_Strike)
+Delta13 <- rep(0, n_Strike)
+Delta13.5 <- rep(0, n_Strike)
+Delta14 <- rep(0, n_Strike)
+Delta14.5 <- rep(0, n_Strike)
+Delta15 <- rep(0, n_Strike)
+Delta15.5 <- rep(0, n_Strike)
+Delta16 <- rep(0, n_Strike)
+Delta16.5 <- rep(0, n_Strike)
+Delta17 <- rep(0, n_Strike)
+Delta17.5 <- rep(0, n_Strike)
+
+Sigma9 <- rep(0, n_Strike)
+Sigma9.5 <- rep(0, n_Strike)
+Sigma10 <- rep(0, n_Strike)
+Sigma10.5 <- rep(0, n_Strike)
+Sigma11 <- rep(0, n_Strike)
+Sigma11.5 <- rep(0, n_Strike)
+Sigma12 <- rep(0, n_Strike)
+Sigma12.5 <- rep(0, n_Strike)
+Sigma13 <- rep(0, n_Strike)
+Sigma13.5 <- rep(0, n_Strike)
+Sigma14 <- rep(0, n_Strike)
+Sigma14.5 <- rep(0, n_Strike)
+Sigma15 <- rep(0, n_Strike)
+Sigma15.5 <- rep(0, n_Strike)
+Sigma16 <- rep(0, n_Strike)
+Sigma16.5 <- rep(0, n_Strike)
+Sigma17 <- rep(0, n_Strike)
+Sigma17.5 <- rep(0, n_Strike)
+
+
+for (i in 1:n_Strike) {
+  Sigma9[i] <- 0.09 + Returnss[i]
+  Sigma9.5[i] <- 0.095 + Returnss[i]
+  Sigma10[i] <- 0.10 + Returnss[i]
+  Sigma10.5[i] <- 0.105 + Returnss[i]
+  Sigma11[i] <- 0.11 + Returnss[i]
+  Sigma11.5[i] <- 0.115 + Returnss[i]
+  Sigma12[i] <- 0.12 + Returnss[i]
+  Sigma12.5[i] <- 0.125 + Returnss[i]
+  Sigma13[i] <- 0.13 + Returnss[i]
+  Sigma13.5[i] <- 0.135 + Returnss[i]
+  Sigma14[i] <- 0.14 + Returnss[i]
+  Sigma14.5[i] <- 0.145 + Returnss[i]
+  Sigma15[i] <- 0.15 + Returnss[i]
+  Sigma15.5[i] <- 0.155 + Returnss[i]
+  Sigma16[i] <- 0.16 + Returnss[i]
+  Sigma16.5[i] <- 0.165 + Returnss[i]
+  Sigma17[i] <- 0.17 + Returnss[i]
+  Sigma17.5[i] <- 0.175 + Returnss[i]
+  
+}
+
+T <- t/366
+
+## Black - Scholes Function for Delta Call
+BS_d1 <- 
+  function(S, K, T, r, sig) { 
+    d1 <- (log(S/K) + T*(r + 0.5*sig*sig)) / (sig*sqrt(T))
+    d2 <- (log(S/K) - T*(r + 0.5*sig*sig)) / (sig*sqrt(T))
+    
+    return(d1)
+  }
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma9[i]
+  Delta9[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta9[i] <- round(Delta9[i], digits = 3)
+}
+
+
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma9.5[i]
+  Delta9.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta9.5[i] <- round(Delta9.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma10[i]
+  Delta10[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta10[i] <- round(Delta10[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma10.5[i]
+  Delta10.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta10.5[i] <- round(Delta10.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma11[i]
+  Delta11[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta11[i] <- round(Delta11[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma11.5[i]
+  Delta11.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta11.5[i] <- round(Delta11.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma12[i]
+  Delta12[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta12[i] <- round(Delta12[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma12.5[i]
+  Delta12.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta12.5[i] <- round(Delta12.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma13[i]
+  Delta13[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta13[i] <- round(Delta13[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma13.5[i]
+  Delta13.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta13.5[i] <- round(Delta13.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma14[i]
+  Delta14[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta14[i] <- round(Delta14[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma14.5[i]
+  Delta14.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta14.5[i] <- round(Delta14.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma15[i]
+  Delta15[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta15[i] <- round(Delta15[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma15.5[i]
+  Delta15.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta15.5[i] <- round(Delta15.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma16[i]
+  Delta16[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta16[i] <- round(Delta16[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma16.5[i]
+  Delta16.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta16.5[i] <- round(Delta16.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma17[i]
+  Delta17[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta17[i] <- round(Delta17[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma17.5[i]
+  Delta17.5[i] <- pnorm(BS_d1(S, K, T, r, sig))
+  Delta17.5[i] <- round(Delta17.5[i], digits = 3)
+}
+
+Strike_Returns <- data.frame(Strike, Returnss, Delta9*Size_K)
+
+
+delta_frame_CALL <- data.frame(Strike = Strike, IV = IV, Smile = Returnss*100, delta9 = Delta9*Size_K, delta9.5 = Delta9.5*Size_K, delta10 = Delta10*Size_K, delta10.5 = Delta10.5*Size_K, 
+                               delta11 = Delta11*Size_K, delta11.5 = Delta11.5*Size_K, delta12 = Delta12*Size_K, delta12.5 = Delta12.5*Size_K, delta13 = Delta13*Size_K, delta13.5 = Delta13.5*Size_K, 
+                               delta14 = Delta14*Size_K, delta14.5 = Delta14.5*Size_K, delta15 = Delta15*Size_K, delta15.5 = Delta15.5*Size_K, 
+                               delta16 = Delta16*Size_K, delta16.5 = Delta16.5*Size_K, delta17 = Delta17*Size_K, delta17.5 = Delta17.5*Size_K)
+
+
+col_names <- c("PRICE", "IV", "Smile", "vol: 9%", "vol: 9.5%", "vol: 10%","vol: 10.5%", "vol: 11%","vol: 11.5%", "vol: 12%","vol: 12.5%", "vol: 13%","vol: 13.5%", "vol: 14%","vol: 14.5%", "vol: 15%","vol: 15.5%", "vol: 16%","vol: 16.5%", "vol: 17%","vol: 17.5%")
+colnames(delta_frame_CALL) <- c(col_names)
+
+
+delta_frame_CC <- data.frame(Strike = Strike, IV = IV, delta9 = Delta9*Size_K, delta9.5 = Delta9.5*Size_K, delta10 = Delta10*Size_K, delta10.5 = Delta10.5*Size_K, 
+                          delta11 = Delta11*Size_K, delta11.5 = Delta11.5*Size_K, delta12 = Delta12*Size_K, delta12.5 = Delta12.5*Size_K, delta13 = Delta13*Size_K, delta13.5 = Delta13.5*Size_K, 
+                          delta14 = Delta14*Size_K, delta14.5 = Delta14.5*Size_K, delta15 = Delta15*Size_K, delta15.5 = Delta15.5*Size_K, 
+                          delta16 = Delta16*Size_K, delta16.5 = Delta16.5*Size_K, delta17 = Delta17*Size_K, delta17.5 = Delta17.5*Size_K)
+
+
+col_names <- c("PRICE", "IV", "vol: 9%", "vol: 9.5%", "vol: 10%","vol: 10.5%", "vol: 11%","vol: 11.5%", "vol: 12%","vol: 12.5%", "vol: 13%","vol: 13.5%", "vol: 14%","vol: 14.5%", "vol: 15%","vol: 15.5%", "vol: 16%","vol: 16.5%", "vol: 17%","vol: 17.5%")
+colnames(delta_frame_CC) <- c(col_names)
+
+# Расчет опциона колл2
+
+
+Volatility_smile <- c(0, 0.0002, 0.0004, 0.0010, 0.0016, 0.0024, 0.0034, 0.0044, 0.0059, 0.0079, 0.0099, 0.0114, 0.0134, 0.0154, 0.0184, 0.0204, 0.0234, 0.0264, 0.0294, 0.0324,NA, NA, NA, NA, NA,
+                      NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                      0.0001, 0.0004, 0.0010, 0.0014, 0.0024, 0.0034, 0.0044, 0.0064, 0.0084, 0.0099, 0.0124, 0.0135, 0.0174, 0.0204, 0.0229, 0.0264, 0.0304, 0.0335, 0.0339, NA, NA, NA, NA, NA,
+                      NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+
+
+Returns <- c(0, 250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000, 5250, 5500, 5750, 6000,
+             6250, 6500, 6750, 7000, 7250, 7500, 7750, 8000, 8250, 8500, 8750, 9000,  9250, 9500, 9750, 10000, 
+             -250, -500, -750, -1000, -1250, -1500, -1750, -2000, -2250, -2500, -2750, -3000, -3250, -3500, -3750, -4000, -4250, -4500, -4750, -5000, -5250, -5500, -5750, -6000,
+             -6250, -6500, -6750, -7000, -7250, -7500, -7750, -8000, -8250, -8500, -8750, -9000, -9250, -9500, -9750, -10000)
+
+
+Strike <- c(66500, 66250, 66000, 65750, 65500, 65250, 65000, 64750, 64500, 64250, 64000, 63750, 63500, 63250, 63000, 62750, 62500, 62250, 62000, 61750, 61500, 61250, 61000, 60750, 60500, 60250, 60000, 
+            59750, 59500, 59250, 59000, 58750, 58500, 58250, 58000, 57750, 57500, 57250, 57000, 56750, 56500, 56250, 56000, 55750, 55500, 55250, 55000)
+n_Strike <- length(Strike)
+n_Returns <- length(Returns)
+n_Volatility_Smile <- length(Volatility_smile)
+
+# Расчет дельты
+
+Vol_Smile_Coeff <- rep(0, n_Returns)
+Returns_Coeff <- rep(0, n_Returns)
+
+for(i in 1:n_Returns) {
+  Vol_Smile_Coeff[i] <- Volatility_smile[i]
+  Returns_Coeff[i] <- Returns[i]
+}
+
+
+Vola_delta <- data.frame(Returns_Coeff, Vol_Smile_Coeff)
+Sigma9 <- 0
+
+for (i in 1:n_Returns) {
+  
+  Raz66500 <- K2 - 66500
+  Raz66250 <- K2 - 66250
+  Raz66000 <- K2 - 66000
+  Raz65750 <- K2 - 65750
+  Raz65500 <- K2 - 65500
+  Raz65250 <- K2 - 65250
+  Raz65000 <- K2 - 65000
+  Raz64750 <- K2 - 64750
+  Raz64500 <- K2 - 64500
+  Raz64250 <- K2 - 64250
+  Raz64000 <- K2 - 64000
+  Raz63750 <- K2 - 63750
+  Raz63500 <- K2 - 63500
+  Raz63250 <- K2 - 63250
+  
+  Raz63000 <- K2 - 63000
+  Raz62750 <- K2 - 62750
+  Raz62500 <- K2 - 62500
+  Raz62250 <- K2 - 62250
+  Raz62000 <- K2 - 62000
+  Raz61750 <- K2 - 61750
+  Raz61500 <- K2 - 61500
+  Raz61250 <- K2 - 61250
+  Raz61000 <- K2 - 61000
+  Raz60750 <- K2 - 60750
+  Raz60500 <- K2 - 60500
+  Raz60250 <- K2 - 60250
+  Raz60000 <- K2 - 60000
+  Raz59750 <- K2 - 59750
+  Raz59500 <- K2 - 59500
+  Raz59250 <- K2 - 59250
+  Raz59000 <- K2 - 59000
+  
+  Raz58750 <- K2 - 58750
+  Raz58500 <- K2 - 58500
+  Raz58250 <- K2 - 58250
+  Raz58000 <- K2 - 58000
+  Raz57750 <- K2 - 57750
+  Raz57500 <- K2 - 57500
+  Raz57250 <- K2 - 57250
+  Raz57000 <- K2 - 57000
+  Raz56750 <- K2 - 56750
+  Raz56500 <- K2 - 56500
+  Raz56250 <- K2 - 56250
+  Raz56000 <- K2 - 56000
+  Raz55750 <- K2 - 55750
+  Raz55500 <- K2 - 55500
+  Raz55250 <- K2 - 55250
+  Raz55000 <- K2 - 55000
+  
+  
+  
+  if ((Raz66500 == Returns_Coeff[i])) { 
+    Best_Sigma66500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz66250 == Returns_Coeff[i])) { 
+    Best_Sigma66250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz66000 == Returns_Coeff[i])) { 
+    Best_Sigma66000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65750 == Returns_Coeff[i])) { 
+    Best_Sigma65750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65500 == Returns_Coeff[i])) { 
+    Best_Sigma65500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65250 == Returns_Coeff[i])) { 
+    Best_Sigma65250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz65000 == Returns_Coeff[i])) { 
+    Best_Sigma65000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64750 == Returns_Coeff[i])) { 
+    Best_Sigma64750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64500 == Returns_Coeff[i])) { 
+    Best_Sigma64500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64250 == Returns_Coeff[i])) { 
+    Best_Sigma64250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz64000 == Returns_Coeff[i])) { 
+    Best_Sigma64000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63750 == Returns_Coeff[i])) { 
+    Best_Sigma63750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63500 == Returns_Coeff[i])) { 
+    Best_Sigma63500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz63250 == Returns_Coeff[i])) { 
+    Best_Sigma63250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+  
+  if ((Raz63000 == Returns_Coeff[i])) { 
+    Best_Sigma63000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62750 == Returns_Coeff[i])) { 
+    Best_Sigma62750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62500 == Returns_Coeff[i])) { 
+    Best_Sigma62500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62250 == Returns_Coeff[i])) { 
+    Best_Sigma62250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz62000 == Returns_Coeff[i])) { 
+    Best_Sigma62000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61750 == Returns_Coeff[i])) { 
+    Best_Sigma61750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61500 == Returns_Coeff[i])) { 
+    Best_Sigma61500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61250 == Returns_Coeff[i])) { 
+    Best_Sigma61250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz61000 == Returns_Coeff[i])) { 
+    Best_Sigma61000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60750 == Returns_Coeff[i])) { 
+    Best_Sigma60750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60500 == Returns_Coeff[i])) { 
+    Best_Sigma60500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60250 == Returns_Coeff[i])) { 
+    Best_Sigma60250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz60000 == Returns_Coeff[i])) { 
+    Best_Sigma60000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59750 == Returns_Coeff[i])) { 
+    Best_Sigma59750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59500 == Returns_Coeff[i])) { 
+    Best_Sigma59500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59250 == Returns_Coeff[i])) { 
+    Best_Sigma59250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz59000 == Returns_Coeff[i])) { 
+    Best_Sigma59000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+  
+  if ((Raz58750 == Returns_Coeff[i])) { 
+    Best_Sigma58750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58500 == Returns_Coeff[i])) { 
+    Best_Sigma58500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58250 == Returns_Coeff[i])) { 
+    Best_Sigma58250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz58000 == Returns_Coeff[i])) { 
+    Best_Sigma58000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57750 == Returns_Coeff[i])) { 
+    Best_Sigma57750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57500 == Returns_Coeff[i])) { 
+    Best_Sigma57500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57250 == Returns_Coeff[i])) { 
+    Best_Sigma57250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz57000 == Returns_Coeff[i])) { 
+    Best_Sigma57000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56750 == Returns_Coeff[i])) { 
+    Best_Sigma56750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56500 == Returns_Coeff[i])) { 
+    Best_Sigma56500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56250 == Returns_Coeff[i])) { 
+    Best_Sigma56250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz56000 == Returns_Coeff[i])) { 
+    Best_Sigma56000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55750 == Returns_Coeff[i])) { 
+    Best_Sigma55750 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55500 == Returns_Coeff[i])) { 
+    Best_Sigma55500 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55250 == Returns_Coeff[i])) { 
+    Best_Sigma55250 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  if ((Raz55000 == Returns_Coeff[i])) { 
+    Best_Sigma55000 <- Sigma9 + Vol_Smile_Coeff[i] }
+  
+  
+}
+
+
+
+Returnss <- c(Best_Sigma66500, Best_Sigma66250, Best_Sigma66000, Best_Sigma65750, Best_Sigma65500, Best_Sigma65250, Best_Sigma65000, 
+              Best_Sigma64750, Best_Sigma64500, Best_Sigma64250, 
+              Best_Sigma64000, Best_Sigma63750, Best_Sigma63500, Best_Sigma63250, Best_Sigma63000, Best_Sigma62750, Best_Sigma62500, 
+              Best_Sigma62250, Best_Sigma62000, Best_Sigma61750, Best_Sigma61500, Best_Sigma61250, Best_Sigma61000, Best_Sigma60750, 
+              Best_Sigma60500, Best_Sigma60250, Best_Sigma60000, Best_Sigma59750, Best_Sigma59500, Best_Sigma59250, Best_Sigma59000,
+              
+              Best_Sigma58750, Best_Sigma58500, Best_Sigma58250, Best_Sigma58000, Best_Sigma57750, Best_Sigma57500, Best_Sigma57250, 
+              Best_Sigma57000, Best_Sigma56750, Best_Sigma56500, Best_Sigma56250, Best_Sigma56000, Best_Sigma55750, Best_Sigma55500, 
+              Best_Sigma55250, Best_Sigma55000)
+
+
+Strike_Returns <- data.frame(Strike, Returnss)
+
+Delta9 <- rep(0, n_Strike)
+Delta9.5 <- rep(0, n_Strike)
+Delta10 <- rep(0, n_Strike)
+Delta10.5 <- rep(0, n_Strike)
+Delta11 <- rep(0, n_Strike)
+Delta11.5 <- rep(0, n_Strike)
+Delta12 <- rep(0, n_Strike)
+Delta12.5 <- rep(0, n_Strike)
+Delta13 <- rep(0, n_Strike)
+Delta13.5 <- rep(0, n_Strike)
+Delta14 <- rep(0, n_Strike)
+Delta14.5 <- rep(0, n_Strike)
+Delta15 <- rep(0, n_Strike)
+Delta15.5 <- rep(0, n_Strike)
+Delta16 <- rep(0, n_Strike)
+Delta16.5 <- rep(0, n_Strike)
+Delta17 <- rep(0, n_Strike)
+Delta17.5 <- rep(0, n_Strike)
+
+Sigma9 <- rep(0, n_Strike)
+Sigma9.5 <- rep(0, n_Strike)
+Sigma10 <- rep(0, n_Strike)
+Sigma10.5 <- rep(0, n_Strike)
+Sigma11 <- rep(0, n_Strike)
+Sigma11.5 <- rep(0, n_Strike)
+Sigma12 <- rep(0, n_Strike)
+Sigma12.5 <- rep(0, n_Strike)
+Sigma13 <- rep(0, n_Strike)
+Sigma13.5 <- rep(0, n_Strike)
+Sigma14 <- rep(0, n_Strike)
+Sigma14.5 <- rep(0, n_Strike)
+Sigma15 <- rep(0, n_Strike)
+Sigma15.5 <- rep(0, n_Strike)
+Sigma16 <- rep(0, n_Strike)
+Sigma16.5 <- rep(0, n_Strike)
+Sigma17 <- rep(0, n_Strike)
+Sigma17.5 <- rep(0, n_Strike)
+
+
+for (i in 1:n_Strike) {
+  Sigma9[i] <- 0.09 + Returnss[i]
+  Sigma9.5[i] <- 0.095 + Returnss[i]
+  Sigma10[i] <- 0.10 + Returnss[i]
+  Sigma10.5[i] <- 0.105 + Returnss[i]
+  Sigma11[i] <- 0.11 + Returnss[i]
+  Sigma11.5[i] <- 0.115 + Returnss[i]
+  Sigma12[i] <- 0.12 + Returnss[i]
+  Sigma12.5[i] <- 0.125 + Returnss[i]
+  Sigma13[i] <- 0.13 + Returnss[i]
+  Sigma13.5[i] <- 0.135 + Returnss[i]
+  Sigma14[i] <- 0.14 + Returnss[i]
+  Sigma14.5[i] <- 0.145 + Returnss[i]
+  Sigma15[i] <- 0.15 + Returnss[i]
+  Sigma15.5[i] <- 0.155 + Returnss[i]
+  Sigma16[i] <- 0.16 + Returnss[i]
+  Sigma16.5[i] <- 0.165 + Returnss[i]
+  Sigma17[i] <- 0.17 + Returnss[i]
+  Sigma17.5[i] <- 0.175 + Returnss[i]
+  
+}
+
+T <- t/366
+
+## Black - Scholes Function for Delta Call
+BS_d1 <- 
+  function(S, K2, T, r, sig) { 
+    d1 <- (log(S/K2) + T*(r + 0.5*sig*sig)) / (sig*sqrt(T))
+    d2 <- (log(S/K2) - T*(r + 0.5*sig*sig)) / (sig*sqrt(T))
+    
+    return(d1)
+  }
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma9[i]
+  Delta9[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta9[i] <- round(Delta9[i], digits = 3)
+}
+
+
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma9.5[i]
+  Delta9.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta9.5[i] <- round(Delta9.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma10[i]
+  Delta10[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta10[i] <- round(Delta10[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma10.5[i]
+  Delta10.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta10.5[i] <- round(Delta10.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma11[i]
+  Delta11[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta11[i] <- round(Delta11[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma11.5[i]
+  Delta11.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta11.5[i] <- round(Delta11.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma12[i]
+  Delta12[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta12[i] <- round(Delta12[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma12.5[i]
+  Delta12.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta12.5[i] <- round(Delta12.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma13[i]
+  Delta13[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta13[i] <- round(Delta13[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma13.5[i]
+  Delta13.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta13.5[i] <- round(Delta13.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma14[i]
+  Delta14[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta14[i] <- round(Delta14[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma14.5[i]
+  Delta14.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta14.5[i] <- round(Delta14.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma15[i]
+  Delta15[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta15[i] <- round(Delta15[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma15.5[i]
+  Delta15.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta15.5[i] <- round(Delta15.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma16[i]
+  Delta16[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta16[i] <- round(Delta16[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma16.5[i]
+  Delta16.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta16.5[i] <- round(Delta16.5[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma17[i]
+  Delta17[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta17[i] <- round(Delta17[i], digits = 3)
+}
+
+for (i in 1:n_Strike) {
+  S <- Strike_Returns$Strike[i]
+  sig <- Sigma17.5[i]
+  Delta17.5[i] <- pnorm(BS_d1(S, K2, T, r, sig))
+  Delta17.5[i] <- round(Delta17.5[i], digits = 3)
+}
+
+Strike_Returns <- data.frame(Strike, Returnss, Delta9*Size_K2)
+
+
+delta_frame_CALL <- data.frame(Strike = Strike, IV = IV, Smile = Returnss*100, delta9 = Delta9*Size_K2, delta9.5 = Delta9.5*Size_K2, delta10 = Delta10*Size_K2, delta10.5 = Delta10.5*Size_K2, 
+                               delta11 = Delta11*Size_K2, delta11.5 = Delta11.5*Size_K2, delta12 = Delta12*Size_K2, delta12.5 = Delta12.5*Size_K2, delta13 = Delta13*Size_K2, delta13.5 = Delta13.5*Size_K2, 
+                               delta14 = Delta14*Size_K2, delta14.5 = Delta14.5*Size_K2, delta15 = Delta15*Size_K2, delta15.5 = Delta15.5*Size_K2, 
+                               delta16 = Delta16*Size_K2, delta16.5 = Delta16.5*Size_K2, delta17 = Delta17*Size_K2, delta17.5 = Delta17.5*Size_K2)
+
+
+col_names <- c("PRICE", "IV", "Smile", "vol: 9%", "vol: 9.5%", "vol: 10%","vol: 10.5%", "vol: 11%","vol: 11.5%", "vol: 12%","vol: 12.5%", "vol: 13%","vol: 13.5%", "vol: 14%","vol: 14.5%", "vol: 15%","vol: 15.5%", "vol: 16%","vol: 16.5%", "vol: 17%","vol: 17.5%")
+colnames(delta_frame_CALL) <- c(col_names)
+
+
+
+# Расчет дельты
+
+
+
+
+for (i in 1:n_Strike) {
+  delta_frame_CC$IV[i] = IV
+  delta_frame_CC$`vol: 9%`[i] = delta_frame_CC$`vol: 9%`[i] + delta_frame_CALL$`vol: 9%`[i]
+  delta_frame_CC$`vol: 9%`[i] = round(delta_frame_CC$`vol: 9%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 9.5%`[i] =  delta_frame_CC$`vol: 9.5%`[i] + delta_frame_CALL$`vol: 9.5%`[i]
+  delta_frame_CC$`vol: 9.5%`[i] = round(delta_frame_CC$`vol: 9.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 10%`[i] =  delta_frame_CC$`vol: 10%`[i] + delta_frame_CALL$`vol: 10%`[i]
+  delta_frame_CC$`vol: 10%`[i] = round(delta_frame_CC$`vol: 10%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 10.5%`[i] =  delta_frame_CC$`vol: 10.5%`[i] + delta_frame_CALL$`vol: 10.5%`[i]
+  delta_frame_CC$`vol: 10.5%`[i] = round(delta_frame_CC$`vol: 10.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 11%`[i] =  delta_frame_CC$`vol: 11%`[i] + delta_frame_CALL$`vol: 11%`[i]
+  delta_frame_CC$`vol: 11%`[i] = round(delta_frame_CC$`vol: 11%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 11.5%`[i] =  delta_frame_CC$`vol: 11.5%`[i] + delta_frame_CALL$`vol: 11.5%`[i]
+  delta_frame_CC$`vol: 11.5%`[i] = round(delta_frame_CC$`vol: 11.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 12%`[i] =  delta_frame_CC$`vol: 12%`[i] + delta_frame_CALL$`vol: 12%`[i]
+  delta_frame_CC$`vol: 12%`[i] = round(delta_frame_CC$`vol: 12%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 12.5%`[i] =  delta_frame_CC$`vol: 12.5%`[i] + delta_frame_CALL$`vol: 12.5%`[i]
+  delta_frame_CC$`vol: 12.5%`[i] = round(delta_frame_CC$`vol: 12.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 13%`[i] =  delta_frame_CC$`vol: 13%`[i] + delta_frame_CALL$`vol: 13%`[i]
+  delta_frame_CC$`vol: 13%`[i] = round(delta_frame_CC$`vol: 13%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 13.5%`[i] =  delta_frame_CC$`vol: 13.5%`[i] + delta_frame_CALL$`vol: 13.5%`[i]
+  delta_frame_CC$`vol: 13.5%`[i] = round(delta_frame_CC$`vol: 13.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 14%`[i] =  delta_frame_CC$`vol: 14%`[i] + delta_frame_CALL$`vol: 14%`[i]
+  delta_frame_CC$`vol: 14%`[i] = round(delta_frame_CC$`vol: 14%`[i], digits = 2)
+  
+  
+  delta_frame_CC$`vol: 14.5%`[i] =  delta_frame_CC$`vol: 14.5%`[i] + delta_frame_CALL$`vol: 14.5%`[i]
+  delta_frame_CC$`vol: 14.5%`[i] = round(delta_frame_CC$`vol: 14.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 15%`[i] =  delta_frame_CC$`vol: 15%`[i] + delta_frame_CALL$`vol: 15%`[i]
+  delta_frame_CC$`vol: 15%`[i] = round(delta_frame_CC$`vol: 15%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 15.5%`[i] =  delta_frame_CC$`vol: 15.5%`[i] + delta_frame_CALL$`vol: 15.5%`[i]
+  delta_frame_CC$`vol: 15.5%`[i] = round(delta_frame_CC$`vol: 15.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 16%`[i] =  delta_frame_CC$`vol: 16%`[i] + delta_frame_CALL$`vol: 16%`[i]
+  delta_frame_CC$`vol: 16%`[i] = round(delta_frame_CC$`vol: 16%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 16.5%`[i] =  delta_frame_CC$`vol: 16.5%`[i] + delta_frame_CALL$`vol: 16.5%`[i]
+  delta_frame_CC$`vol: 16.5%`[i] = round(delta_frame_CC$`vol: 16.5%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 17%`[i] =  delta_frame_CC$`vol: 17%`[i] + delta_frame_CALL$`vol: 17%`[i]
+  delta_frame_CC$`vol: 17%`[i] = round(delta_frame_CC$`vol: 17%`[i], digits = 2)
+  
+  delta_frame_CC$`vol: 17.5%`[i] =  delta_frame_CC$`vol: 17.5%`[i] + delta_frame_CALL$`vol: 17.5%`[i]
+  delta_frame_CC$`vol: 17.5%`[i] = round(delta_frame_CC$`vol: 17.5%`[i], digits = 2)
+  
+  
+}
+
+
+for (i in 1:n_Strike) {
+  if ((Price - delta_frame_CC$PRICE[i]) <= 300 && (Price-delta_frame_CC$PRICE[i]) > 0) {
+    Near_Strike <- delta_frame_CC$PRICE[i] 
+  } 
+}
+
+row_Near_Strike <- which(grepl(Near_Strike, delta_frame_CC$PRICE))-1
+
+newrow <- c(Price, IV ,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0)
+f <- length(newrow)
+delta_frame_CC <- rbind(delta_frame_CC[1:row_Near_Strike,], newrow, delta_frame_CC[-(1:row_Near_Strike),])
+
