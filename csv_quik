@@ -1,0 +1,24 @@
+
+1. Правой кнопкой по sheet, исходный код 2. слева в проекте открываем ЭтаКнига 3. Откроется окно, в нем вкладка Workbook/Open. Сохраняем там код
+
+Private Sub Workbook_Open()
+    Dim currentTime As Date
+    currentTime = DateAdd("s", 2, Now)
+    Application.OnTime currentTime, "SaveFile"
+End Sub
+
+4. Menu->Insert->Module
+5. Дважды кликаем по появившемуся слева модулю, сохраняем в него код: 
+
+Public Sub SaveFile()
+    ThisWorkbook.Save
+
+    Dim currentTime As Date
+    currentTime = DateAdd("s", 2, Now)
+    Application.OnTime currentTime, "SaveFile"
+End Sub
+
+6. Сохраняем все, нажимаем Play. 
+7. У меня еще возникла проблема - при сохранении возникала ошибка как здесь: http://www.planetaexcel.ru/forum/?PAGE_NAME=read&FID=8&TID=5771http://www.planetaexcel.ru/forum/? 
+Решается просто: В параметрах конфиденциальности снять галку "Удалять личные сведения...". Это в настройках безопасности
+Будут вопросы - пиши
